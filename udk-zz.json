@@ -53,7 +53,7 @@
       }
     },
     "/order/add": {
-      "put": {
+      "post": {
         "summary": "Put new shipping order",
         "description": "Этот метод используется для передачи данных заказа.",
         "operationId": "addOrder",
