@@ -1,0 +1,293 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "UDK-ZZ API",
+    "description": "The API is an HTTP interface for working with ZZ data. The base path for all API requests is https://api.zz.com/v1/. Use  https://sandbox-api.zz.com/v1/ - for testing purpozes.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.zz.com/v1"
+    },
+    {
+      "url": "https://sandbox-api.zz.com/v1"
+    }
+  ],
+  "paths": {
+    "/order/get": {
+      "get": {
+        "summary": "Get an existing shipping order",
+        "description": "Этот метод используется для получения данных заказа. Ответ возвращается в виде объекта ShippingOrder",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "ID of shipping order to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingOrder"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "shippingOrder not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/order/add": {
+      "put": {
+        "summary": "Put new shipping order",
+        "description": "Этот метод используется для передачи данных заказа.",
+        "operationId": "addOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingOrder"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "405": {
+            "description": "validation exception",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "order"
+      }
+    },
+    "/order/list": {
+      "get": {
+        "summary": "Get shipping order list",
+        "description": "Этот метод используется для получения массива заказов. Ответ возвращается в виде массива объектов ShippingOrder",
+        "operationId": "getOrderList",
+        "parameters": [
+          {
+            "name": "updateDate",
+            "in": "query",
+            "description": "Date to filter orders",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Additional filter for orders",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShippingOrder"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "shippingOrders not found",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ShippingOrder": {
+        "type": "object",
+        "properties": {
+          "guid": {
+            "type": "string",
+            "description": "Origin: 1C. Уникальный идентификатор заявки"
+          },
+          "id": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "update_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Origin: ZZ",
+            "default": false
+          },
+          "date": {
+            "type": "string",
+            "description": "Origin: ZZ. Дата регистрации заявки",
+            "format": "date-time"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Origin: ZZ. Валюта документа"
+          },
+          "rate_limit": {
+            "type": "number",
+            "description": "Origin: 1C. Предельная ставка стоимости доставки",
+            "example": 1700
+          },
+          "final_rate": {
+            "type": "number",
+            "description": "Origin: ZZ. Окончательная ставка",
+            "example": 1500
+          },
+          "execution_status": {
+            "type": "string",
+            "description": "Origin: ZZ. Статус заказа",
+            "enum": [
+              "order_created",
+              "order_canceled",
+              "tender",
+              "tender_confirmation",
+              "waiting_truck",
+              "waiting_loading",
+              "loading",
+              "on_the_way",
+              "waiting_unloading",
+              "unloading",
+              "delivered"
+            ]
+          },
+          "vehicle_type": {
+            "type": "string",
+            "description": "Origin: 1C. Типы транспортных средств",
+            "enum": [
+              "side_loading",
+              "back_loading",
+              "top_loading",
+              "etc"
+            ]
+          },
+          "order_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          }
+        },
+        "description": "Заявка на доставку"
+      },
+      "OrderItem": {
+        "type": "object",
+        "properties": {
+          "guid": {
+            "type": "string",
+            "description": "Origin: 1C. Уникальный идентификатор строки заявки"
+          },
+          "id": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "update_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Origin: ZZ",
+            "default": false
+          },
+          "product_name": {
+            "type": "string",
+            "description": "Origin: 1C. Наименование товара"
+          },
+          "units": {
+            "type": "integer",
+            "description": "Origin: 1C. Единица измерения"
+          },
+          "multiplicity": {
+            "type": "integer",
+            "description": "Origin: 1C. Кратность количества товара"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Origin: 1C. Количество товара"
+          },
+          "items": {
+            "type": "integer",
+            "description": "Origin: 1C. Количество мест товара"
+          },
+          "shipment_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "unload_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "loading_address": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "unloading_address": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          }
+        },
+        "description": "Строка заявки на доставку"
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      },
+      "zz_auth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://api.zz.com/oauth/authorize",
+            "scopes": {}
+          }
+        }
+      }
+    }
+  }
+}

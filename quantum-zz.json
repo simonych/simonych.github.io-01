@@ -1,0 +1,993 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "QUANTUM-ZZ API",
+    "description": "The API is an HTTP interface for working with ZZ data. The base path for all API requests is https://api.zz.com/v1/. Use  https://sandbox-api.zz.com/v1/ - for testing purpozes.",
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.zz.com/v1"
+    },
+    {
+      "url": "https://sandbox-api.zz.com/v1"
+    }
+  ],
+  "paths": {
+    "/order/get": {
+      "get": {
+        "summary": "Get an existing shipping order",
+        "description": "Этот метод используется для получения данных заказа. Ответ возвращается в виде объекта ShippingOrder",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "ID of shipping order to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingOrder"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "shippingOrder not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/order/list": {
+      "get": {
+        "summary": "Get shipping order list by update_date",
+        "description": "Этот метод используется для получения списка заказов данные которых были изменены после указанной даты. Ответ возвращается в виде массива ShippingOrder",
+        "operationId": "getOrderList",
+        "parameters": [
+          {
+            "name": "update_date",
+            "in": "query",
+            "description": "Date to filter objects",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limits the number of ids to be retrieved. Values between 1—100 are accepted. Defaults to 100.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Additional filter (to be discussed with ZZ) ???",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShippingOrder"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ShippingOrders not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/client/get": {
+      "get": {
+        "summary": "Get an existing client",
+        "description": "Этот метод используется для получения данных клиента. Ответ возвращается в виде объекта Client",
+        "operationId": "getClient",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "description": "ID of client to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Client"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "client not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/client/list": {
+      "get": {
+        "summary": "Get client list by update_date",
+        "description": "Этот метод используется для получения списка клиентов данные которых были изменены после указанной даты. Ответ возвращается в виде массива объектов Client.",
+        "operationId": "getClientList",
+        "parameters": [
+          {
+            "name": "update_date",
+            "in": "query",
+            "description": "Date to filter objects",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limits the number of ids to be retrieved. Values between 1—100 are accepted. Defaults to 100.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Additional filter (to be discussed with ZZ) ???",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Client"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "clients not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/contractstatus/set": {
+      "put": {
+        "summary": "Method is used to set contract status and link",
+        "description": "Этот метод используется для передачи статуса подписания договора и ссылки на PDF/Вчасно для просмотра. Ссылка на просмотр PDF договора и его статус будут отображаться в кабинете клиента ZZ Не изменяет update_date",
+        "operationId": "setContractStatus",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "description": "client id (ZZ)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contract_status",
+            "in": "query",
+            "description": "Contract status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "link",
+            "in": "query",
+            "description": "Link to PDF/Vchasno",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          },
+          "405": {
+            "description": "validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/clientcheckstatus/set": {
+      "put": {
+        "summary": "Method is used to set client check status",
+        "description": "Этот метод используется для передачи статуса проверки клиента (например средствами U-Control). Статусы проверки клиента будут отображаться в кабинете клиента ZZ. Не изменяет update_date",
+        "operationId": "setClientCheckStatus",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "description": "client id (ZZ)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "check_status",
+            "in": "query",
+            "description": "Check status",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "check_type",
+            "in": "query",
+            "description": "Type of check",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/clientpaymentcondition/set": {
+      "put": {
+        "summary": "Method is used to set client payment condition",
+        "description": "Этот метод используется для установки порядка оплаты клиенту. Порядок оплаты клиента будет отображаться в кабинете клиента ZZ. Не изменяет update_date",
+        "operationId": "setClientPaymentCondition",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "description": "client id (ZZ)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payment_condition",
+            "in": "query",
+            "description": "condition in contract (prepayment/deferment of payment __days)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/documentcheckstatus/set": {
+      "put": {
+        "summary": "Method is used to set document check status",
+        "description": "Этот метод используется для передачи статуса проверки документа. Статус проверки документа будет отображаться в кабинете клиента ZZ. Не изменяет update_date",
+        "operationId": "setDocumentCheckStatus",
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "query",
+            "description": "document id (ZZ)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "check_status",
+            "in": "query",
+            "description": "Check status",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rejection_reason",
+            "in": "query",
+            "description": "required if \"status is denied\" - reason of denied status",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/signeddocumentsignstatus/set": {
+      "put": {
+        "summary": "Method is used to set status of signed document and link",
+        "description": "Этот метод используется для передачи данных статуса подписи и ссылок на PDF/Вчасно документа заказа. Ссылки на просмотр PDF документов будут отображаться в ShippingOrder ZZ. Не изменяет update_date",
+        "operationId": "setSignedDocumentSignStatus",
+        "parameters": [
+          {
+            "name": "signedDocumentId",
+            "in": "query",
+            "description": "signed document id (ZZ)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sign_status",
+            "in": "query",
+            "description": "Check status",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "link",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/orderpayment/set": {
+      "put": {
+        "summary": "Method is used to set order payment",
+        "description": "Этот метод используется для установки суммы оплаты заказа. Не изменяет update_date",
+        "operationId": "setOrderPayment",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "order id (ZZ)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payment_sum",
+            "in": "query",
+            "description": "Check status",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "invalid ID supplied",
+            "content": {}
+          },
+          "405": {
+            "description": "validation exception",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ShippingOrder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "update_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Origin: ZZ",
+            "default": false
+          },
+          "date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "shipment_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "unload_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "transport_owner": {
+            "$ref": "#/components/schemas/Client"
+          },
+          "contact_person_to": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "cargo_owner": {
+            "$ref": "#/components/schemas/Client"
+          },
+          "contact_person_co": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/Client"
+          },
+          "contact_person_consignee": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "sum_co": {
+            "type": "number",
+            "description": "Origin: ZZ",
+            "example": 293.25
+          },
+          "sum_to": {
+            "type": "number",
+            "description": "Origin: ZZ",
+            "example": 765.43
+          },
+          "loading_address": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "unloading_address": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/Vehicle"
+          },
+          "driver": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "payment_sum": {
+            "type": "number",
+            "description": "Origin: ZZ",
+            "example": 1024.32
+          },
+          "signed_documents": {
+            "type": "array",
+            "description": "Origin: 1C",
+            "items": {
+              "$ref": "#/components/schemas/SignedDocument"
+            }
+          },
+          "execution_status": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "order_created",
+              "order_canceled",
+              "tender",
+              "tender_confirmation",
+              "waiting_truck",
+              "waiting_loading",
+              "loading",
+              "on_the_way",
+              "waiting_unloading",
+              "unloading",
+              "delivered"
+            ]
+          }
+        }
+      },
+      "ClientCheckInfo": {
+        "type": "object",
+        "properties": {
+          "check_type": {
+            "type": "string",
+            "description": "Origin: 1C",
+            "enum": [
+              "ucontrol",
+              "internal"
+            ]
+          },
+          "check_status": {
+            "type": "string",
+            "description": "Origin: 1C",
+            "enum": [
+              "passed",
+              "failed"
+            ]
+          }
+        }
+      },
+      "Client": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "update_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Origin: ZZ",
+            "default": false
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Origin: ZZ. Full company name"
+          },
+          "responsible_person": {
+            "type": "string",
+            "description": "Origin: ZZ. Official person can sign legal docs"
+          },
+          "responsible_person_position": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "responsibility_document": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "responsibility_document_validity": {
+            "type": "string",
+            "description": "Origin: ZZ.  Validity of responsibility document",
+            "format": "date-time"
+          },
+          "payment_condition": {
+            "type": "string",
+            "description": "Origin:ZZ. condition in contract (prepayment/deferment of payment __days)",
+            "enum": [
+              "fullprepayment",
+              "deferment_of_payment_days"
+            ]
+          },
+          "comment": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "registration_number": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "vat_number": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "type_of_client": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "legal",
+              "individual",
+              "private_enterpreneur"
+            ]
+          },
+          "legal_address": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "correspondence_address": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "contact_details": {
+            "$ref": "#/components/schemas/ContactData"
+          },
+          "registration": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "poa": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "charter": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "certificate": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "passport": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "id_code": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "type_of_activity": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "co",
+              "to"
+            ]
+          },
+          "bank_account": {
+            "$ref": "#/components/schemas/BankAccount"
+          },
+          "contact_person": {
+            "$ref": "#/components/schemas/ContactPerson"
+          },
+          "signed_documents": {
+            "type": "array",
+            "description": "Origin: 1C",
+            "items": {
+              "$ref": "#/components/schemas/SignedDocument"
+            }
+          },
+          "contract_status": {
+            "type": "string",
+            "description": "Origin: 1C",
+            "enum": [
+              "signed",
+              "refused",
+              "waiting"
+            ]
+          },
+          "check_info": {
+            "type": "array",
+            "description": "Origin: 1C",
+            "items": {
+              "$ref": "#/components/schemas/ClientCheckInfo"
+            }
+          }
+        }
+      },
+      "ContactPerson": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "contact_data": {
+            "$ref": "#/components/schemas/ContactData"
+          }
+        }
+      },
+      "Vehicle": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "car_number": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "trailer_number": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          }
+        }
+      },
+      "Person": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "type": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "passport",
+              "drivers_licese",
+              "etc"
+            ]
+          },
+          "documents": {
+            "type": "array",
+            "description": "Origin: ZZ",
+            "items": {
+              "$ref": "#/components/schemas/Document"
+            }
+          },
+          "birth_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "male",
+              "female",
+              "etc"
+            ]
+          },
+          "nationality": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "contact_data": {
+            "$ref": "#/components/schemas/ContactData"
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "update_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Origin: ZZ",
+            "default": false
+          },
+          "type": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "passport",
+              "drivers_license",
+              "etc"
+            ]
+          },
+          "series": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "number": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "issue_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "issued_by": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "validity": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "check_status": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "enum": [
+              "passed",
+              "failed"
+            ]
+          },
+          "rejection_reason": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "link": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "example": "http://data.zz.com/files/94a7g2j93j57927j4jjjj31928dfgewy752er935.pdf"
+          }
+        }
+      },
+      "ContactData": {
+        "type": "object",
+        "properties": {
+          "work_phone": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "mobile_phone": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "email": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "instant_messenger": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "skype": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          }
+        }
+      },
+      "BankAccount": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "iban": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "bank_code": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          }
+        }
+      },
+      "SignedDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Origin: ZZ"
+          },
+          "update_date": {
+            "type": "string",
+            "description": "Origin: ZZ",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Origin: ZZ",
+            "default": false
+          },
+          "type": {
+            "type": "string",
+            "description": "Origin: 1C",
+            "enum": [
+              "invoice",
+              "contract_application",
+              "acceptance_act"
+            ]
+          },
+          "sign_status": {
+            "type": "string",
+            "description": "Origin: 1C",
+            "enum": [
+              "signed",
+              "rejected",
+              "waiting"
+            ]
+          },
+          "link": {
+            "type": "string",
+            "description": "Origin: 1C",
+            "example": "http://data.zz.com/files/94a7g2j93j57927j4jjjj31928dfgewy752er935.pdf"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      },
+      "zz_auth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://api.zz.com/oauth/authorize",
+            "scopes": {}
+          }
+        }
+      }
+    }
+  }
+}
