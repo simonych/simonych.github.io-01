@@ -476,15 +476,15 @@
     "schemas": {
       "ShippingOrder": {
         "type": "object",
-        "description": "Corresponds in ZZ to: ShippingOrderEditModel",
+        "description": "In ZZ: ShippingOrderEditModel",
         "properties": {
           "id": {
             "type": "string",
-            "description": "Origin: ZZ. Corresponds in ZZ to: ShippingOrderEditModel.Id"
+            "description": "Origin: ZZ. In ZZ: ShippingOrderEditModel.Id"
           },
           "update_date": {
             "type": "string",
-            "description": "Origin: ZZ. Corresponds in ZZ to: NOTHING",
+            "description": "Origin: ZZ. In ZZ: NOTHING",
             "format": "date-time"
           },
           "deleted": {
